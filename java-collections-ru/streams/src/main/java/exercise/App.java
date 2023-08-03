@@ -3,13 +3,13 @@ package exercise;
 import java.util.List;
 
 public class App {
+    public static final List<String> FREE_HOSTS = List.of("gmail.com", "yandex.ru", "hotmail.com");
 
-    public static final List<String> FREE = List.of("gmail.com", "yandex.ru", "hotmail.com");
-
-    public static int getCountOfFreeEmails(List<String> emails) {
-        return (int) emails
+    public static long getCountOfFreeEmails(List<String> emails) {
+        return emails
                 .stream()
-                .filter(email -> FREE.contains(email.split("@")[1]))
+                .map(email -> email.split("@")[1])
+                .filter(FREE_HOSTS::contains)
                 .count();
     }
 }
