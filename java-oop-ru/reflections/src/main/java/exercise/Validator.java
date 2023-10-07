@@ -13,8 +13,7 @@ public class Validator {
         Field[] fields = object.getClass().getDeclaredFields();
 
         return Arrays.stream(fields)
-                .peek(field -> field.setAccessible(true))
-                .filter(field -> field.getDeclaredAnnotation(NotNull.class) != null)
+                .filter(field -> field.isAnnotationPresent(NotNull.class))
                 .filter(field -> isNull(field, object))
                 .map(Field::getName)
                 .toList();
@@ -24,9 +23,7 @@ public class Validator {
         Field[] fields = object.getClass().getDeclaredFields();
 
         return Arrays.stream(fields)
-                .peek(field -> field.setAccessible(true))
-                .filter(field -> field.getDeclaredAnnotation(NotNull.class) != null
-                        || field.getDeclaredAnnotation(MinLength.class) != null)
+                .filter(field -> field.isAnnotationPresent(NotNull.class) || field.isAnnotationPresent(MinLength.class))
                 .map(field -> fieldToEntry(field, object))
                 .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -36,6 +33,7 @@ public class Validator {
         boolean result = true;
 
         try {
+            field.setAccessible(true);
             result = field.get(object) == null;
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException exeption) {
             exeption.printStackTrace();
@@ -48,26 +46,28 @@ public class Validator {
         String key = field.getName();
         List<String> value = null;
 
+
         try {
-            if (field.getDeclaredAnnotation(NotNull.class) != null) {
-                if (field.get(object) == null) {
-                    value = List.of("can not be null");
-                    return new AbstractMap.SimpleEntry<String, List<String>>(key, value);
-                }
+            field.setAccessible(true);
+            var notNullAnntt = field.getDeclaredAnnotation(NotNull.class);
+            var minLengthAnntt = field.getDeclaredAnnotation(MinLength.class);
+
+            if (notNullAnntt != null && field.get(object) == null) {
+                value = List.of("can not be null");
             }
 
-            if (field.getDeclaredAnnotation(MinLength.class) != null) {
-                int length = field.getDeclaredAnnotation(MinLength.class).minLength();
-                if (field.get(object).toString().length() < length) {
-                    value = List.of(String.format("length less than %s", length));
-                    return new AbstractMap.SimpleEntry<String, List<String>>(key, value);
+            if (minLengthAnntt != null && field.get(object) != null) {
+                int expectedLength = field.getDeclaredAnnotation(MinLength.class).minLength();
+                int actualLength = field.get(object).toString().length();
+                if (actualLength < expectedLength) {
+                    value = List.of(String.format("length less than %s", expectedLength));
                 }
             }
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException exeption) {
             exeption.printStackTrace();
         }
 
-        return new AbstractMap.SimpleEntry<String, List<String>>(key, value);
+        return new AbstractMap.SimpleEntry<>(key, value);
     }
 
 }
