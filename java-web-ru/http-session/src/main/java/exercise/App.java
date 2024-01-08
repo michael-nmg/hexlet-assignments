@@ -2,7 +2,6 @@ package exercise;
 
 import java.util.Map;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import io.javalin.Javalin;
 
@@ -20,14 +19,9 @@ public final class App {
             var page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
             var per = ctx.queryParamAsClass("per", Integer.class).getOrDefault(5);
 
-            var start = per * page - per;
+            var start = per * (page - 1);
             var end = per * page;
-
-            var result = IntStream.range(start, end)
-                    .boxed()
-                    .map(USERS::get)
-                    .toList();
-
+            var result = USERS.subList(start, end);
             ctx.json(result);
         });
         // END
