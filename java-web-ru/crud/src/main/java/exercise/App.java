@@ -1,8 +1,8 @@
 package exercise;
 
 import io.javalin.Javalin;
-import exercise.controller.PostsController;
 import exercise.controller.RootController;
+import exercise.controller.PostsController;
 
 import static exercise.util.NamedRoutes.rootPath;
 import static exercise.util.NamedRoutes.postsPath;
@@ -19,8 +19,8 @@ public final class App {
         app.get(rootPath(), RootController::index);
 
         // BEGIN
-        app.get(postPath(), PostsController::show);
         app.get(postsPath(), PostsController::index);
+        app.get(postPath("{id}"), PostsController::show);
         // END
 
         return app;

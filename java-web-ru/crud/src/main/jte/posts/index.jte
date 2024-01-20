@@ -17,7 +17,7 @@
                     <tr>
                         <th scope="row">${post.getId()}</th>
                         <td>
-                            <a href="${NamedRoutes.postsPath()}/${post.getId()}">${post.getName()}</a>
+                            <a href="${NamedRoutes.postPath(post.getId())}">${post.getName()}</a>
                         </td>
                     </tr>
                 @endfor
