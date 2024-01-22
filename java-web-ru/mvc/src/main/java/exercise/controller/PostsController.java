@@ -69,8 +69,9 @@ public class PostsController {
     }
 
     public static void patch(Context context) {
+        var id = context.pathParamAsClass("id", Long.class).get();
+
         try {
-            var id = context.pathParamAsClass("id", Long.class).get();
             var name = context.formParamAsClass("name", String.class)
                     .check(value -> value.length() >= 2, "Название не должно быть короче двух символов")
                     .get();
@@ -79,12 +80,14 @@ public class PostsController {
                     .check(value -> value.length() >= 10, "Пост должен быть не короче 10 символов")
                     .get();
 
-            var post = PostRepository.find(id).get();
+            var post = PostRepository.find(id)
+                    .orElseThrow(() -> new NotFoundResponse("Post not found"));
+
             post.setName(name);
             post.setBody(body);
-            context.redirect("/posts");
+            PostRepository.save(post);
+            context.redirect(NamedRoutes.postsPath());
         } catch (ValidationException exception) {
-            var id = context.pathParamAsClass("id", Long.class).get();
             var name = context.formParam("name");
             var body = context.formParam("body");
             var post = new Post(id, name, body);
