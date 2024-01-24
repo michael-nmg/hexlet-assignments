@@ -1,14 +1,15 @@
 package exercise.controller;
 
-import exercise.util.Security;
 import exercise.model.User;
+import exercise.util.Security;
 import exercise.util.NamedRoutes;
 
 import java.util.Collections;
 
-import exercise.repository.UserRepository;
-import io.javalin.http.NotFoundResponse;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
+import exercise.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 
 
 public class UsersController {
@@ -19,10 +20,10 @@ public class UsersController {
 
     // BEGIN
     public static void create(Context context) {
-        var firstName = context.formParamAsClass("firstName", String.class).get();
-        var lastName = context.formParamAsClass("lastName", String.class).get();
-        var email = context.formParamAsClass("email", String.class).get();
-        var password = context.formParamAsClass("password", String.class).get();
+        var firstName = StringUtils.capitalize(context.formParam("firstName"));
+        var lastName = StringUtils.capitalize(context.formParam("lastName"));
+        var email = context.formParam("email").trim().toLowerCase();
+        var password = context.formParam("password");
 
         var token = Security.generateToken();
         context.cookie("token", token);
@@ -38,7 +39,7 @@ public class UsersController {
         var token = context.cookie("token");
 
         var user = UserRepository.find(id)
-                .orElseThrow(() -> new NotFoundResponse("User not found"));
+                .orElseThrow(() -> new NotFoundResponse("User" + id + "not found"));
 
         if (token != null && token.equals(user.getToken())) {
             context.render("users/show.jte", Collections.singletonMap("user", user));
