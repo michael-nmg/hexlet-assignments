@@ -7,9 +7,7 @@
     </head>
     <body>
     <div class="container">
-        <p>
-            Hello, <%= request.getAttribute("message") %>!
-        </p>
+        <p><%= request.getAttribute("message") %></p>
     </div>
     </body>
 </html>

@@ -12,8 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        var name = req.getParameter("name");
-        req.setAttribute("message", name == null ? "Guest" : name);
+        var param = req.getParameter("name");
+        var name = param == null ? "Guest" : param;
+        var message = String.format("Hello, %s!", name);
+        req.setAttribute("message", message);
         req.getRequestDispatcher("WEB-INF/hello.jsp").forward(req, resp);
     }
 }
