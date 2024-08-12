@@ -42,10 +42,7 @@ public class Application {
         var actual = posts.stream()
             .filter(post -> post.getId().equals(postId))
             .findFirst();
-
-            return actual.isPresent()
-            ? ResponseEntity.ok(actual.get())
-            : ResponseEntity.notFound().build();
+            return ResponseEntity.of(actual);
     }
 
     @PostMapping("/posts")
