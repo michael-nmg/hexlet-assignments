@@ -1,0 +1,44 @@
+---
+
+# BEGIN
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  output:
+    ansi:
+      enabled: always
+
+# spring:
+#   datasource:
+#     url: jdbc:h2:mem:testdb
+#     type: com.zaxxer.hikari.HikariDataSource
+#     hikari:
+#       driver-class-name: org.h2.Driver
+#       username: sa
+#       password: password
+#       connection-timeout: 50000
+#       idle-timeout: 300000
+#       max-lifetime: 900000
+#       maximum-pool-size: 10
+#       minimum-idle: 10
+#       pool-name: ConnPool
+#       connection-test-query=select 1 from: dual
+#       data-source-properties.cachePrepStmts: true
+#       data-source-properties.prepStmtCacheSize: 250
+#       data-source-properties.prepStmtCacheSqlLimit: 2048
+#       data-source-properties.useServerPrepStmts: true
+#       data-source-properties.useLocalSessionState: true
+#       data-source-properties.rewriteBatchedStatements: true
+#       data-source-properties.cacheResultSetMetadata: true
+#       data-source-properties.cacheServerConfiguration: true
+#       data-source-properties.elideSetAutoCommits: true
+#       data-source-properties.maintainTimeStats: false
+#   jpa:
+#     show-sql: true
+#     generate-ddl: true
+#   output:
+#     ansi:
+#       enabled: always
+# END
