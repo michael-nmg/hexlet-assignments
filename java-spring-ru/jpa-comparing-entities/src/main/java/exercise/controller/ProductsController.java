@@ -35,12 +35,8 @@ public class ProductsController {
     @PostMapping("")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Product create(@RequestBody Product data) {
-        var check = productRepository.findByTitle(data.getTitle());
-
-        if (check.isPresent()) {
-            if (check.get().equals(data)) {
-                throw new ResourceAlreadyExistsException("Product exist");
-            }
+        if (productRepository.findAll().contains(data)) {
+            throw new ResourceAlreadyExistsException("Product exist");
         }
 
         productRepository.save(data);
