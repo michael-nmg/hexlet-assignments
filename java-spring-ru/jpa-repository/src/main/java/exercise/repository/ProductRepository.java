@@ -13,8 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT e FROM Product e WHERE e.price BETWEEN :min AND :max ORDER BY e.price ASC")
-    public List<Product> findByPriceRange(
-        @Param("min") Integer min,
-        @Param("max") Integer max);
+    // @Query("SELECT e FROM Product e WHERE e.price BETWEEN :min AND :max ORDER BY e.price ASC")
+    // public List<Product> findByPriceRange(
+        // @Param("min") Integer min,
+        // @Param("max") Integer max);
+    public List<Product> findByPriceBetween(Integer min, Integer max, Sort sort);
 }

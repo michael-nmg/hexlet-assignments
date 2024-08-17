@@ -27,7 +27,7 @@ public class ProductsController {
             @RequestParam(defaultValue = "0") Integer min,
             @RequestParam(defaultValue = "0") Integer max) {
         max = max == 0 ? Integer.MAX_VALUE : max;
-        return productRepository.findByPriceRange(min, max);
+        return productRepository.findByPriceBetween(min, max, Sort.by(Sort.Order.asc("price")));
     }
     // END
 
