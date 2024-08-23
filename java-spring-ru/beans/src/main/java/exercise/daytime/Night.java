@@ -10,8 +10,8 @@ public class Night implements Daytime {
 
     // BEGIN
     @PostConstruct
-    public String init() {
-        return String.format("bean %s created%n", name);
+    public void init() {
+        System.out.format("bean %s created%n", name);
     }
     // END
 }
