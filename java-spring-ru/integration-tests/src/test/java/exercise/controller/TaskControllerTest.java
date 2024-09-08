@@ -1,8 +1,6 @@
 package exercise.controller;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.instancio.Instancio;
@@ -62,11 +60,6 @@ class ApplicationTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
-    }
-
-    @AfterEach
-    public void after() {
-        taskRepository.deleteAll();
     }
 
     @Test
@@ -152,21 +145,25 @@ class ApplicationTest {
 
     @Test
     public void testDeleteTask() throws Exception {
-        var task = Instancio.of(Task.class)
+        var data = generatedTask();
+        var title = data.getTitle();
+        taskRepository.save(data);
+
+        var request = delete("/tasks/{id}", data.getId());
+        mockMvc.perform(request).andExpect(status().isOk());
+
+        var result = taskRepository.findByTitle(title);
+        assertThat(result.isEmpty()).isEqualTo(true);
+    }
+
+    private Task generatedTask() {
+        return Instancio.of(Task.class)
         .ignore(Select.field(Task::getId))
         .ignore(Select.field(Task::getUpdatedAt))
         .ignore(Select.field(Task::getCreatedAt))
         .supply(Select.field(Task::getTitle), () -> faker.lorem().word())
         .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph())
         .create();
-        var title = task.getTitle();
-        var id = taskRepository.save(task).getId();
-
-        var request = delete("/tasks/" + id);
-        mockMvc.perform(request)
-            .andExpect(status().isOk());
-        var result = taskRepository.findByTitle(title);
-        assertThat(result.isEmpty()).isEqualTo(true);
     }
     // END
 }
